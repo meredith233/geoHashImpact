@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import constants
+import laplace
 import utils
 from geo import encode_geohash, decode_geohash
 
@@ -47,6 +48,7 @@ lat_hash, lng_hash = encode_geohash(baseX, baseY)
 def do_r():
     dis_single = []
     for _ in range(1000):
+        laplace.process(baseX, baseY)
         lat_hash_arr = [c for c in lat_hash]
         lng_hash_arr = [c for c in lng_hash]
         # 后5位随机取一位扰动
@@ -61,10 +63,12 @@ def do_r():
         target_lat, target_lng = decode_geohash(lat_hash_fin, lng_hash_fin)
         dis_single.append(utils.distance(target_lat, target_lng, baseX, baseY))
     print(mean(dis_single))
+    laplace.next_step()
     return mean(dis_single)
 
 
 dis_single_fin = []
+dis_lap = []
 e_list = [round(i, 1) for i in np.arange(0.1, 1.1, 0.1)]
 for ep in e_list:
     constants.epsilon = ep
@@ -73,12 +77,12 @@ for ep in e_list:
     constants.rate_of_0_to_1 = 1 / (constants.e_epsilon + 1)
     dis_single_fin.append(do_r())
 
-
-plt.ylim(min(dis_single_fin) - 10, max(dis_single_fin)+10)
+plt.ylim(min(dis_single_fin) - 10, max(dis_single_fin) + 30)
 plt.xlim(0, 1)
 
 plt.title("关系图")
 plt.xlabel("epsilon")  # 定义x坐标轴名称
 plt.ylabel("distance")  # 定义y坐标轴名称
 plt.plot(e_list, dis_single_fin)  # 绘图
+plt.plot(e_list, laplace.get_dis())
 plt.show()  # 展示
