@@ -1,12 +1,11 @@
 import os
-from pyecharts import options as opts
-from pyecharts.charts import Map
-import pandas as pd
+import folium
+from folium.plugins import HeatMap
 
 objects = []
-# 总路径
+# # 总路径
 path = "./Data/{}/Trajectory"
-for i in range(182):
+for i in range(10):
     current_path = path.format(str(i).zfill(3))
     plts = os.scandir(current_path)
     for item in plts:
@@ -14,6 +13,12 @@ for i in range(182):
         with open(path_item, 'r+') as fp:
             for line in fp.readlines()[6::600]:
                 item_list = line.split(',')
-                objects.append([float(item_list[1]), float(item_list[0])])
+                objects.append([float(item_list[0]), float(item_list[1])])
 
+san_map = folium.Map(location=[39.90830689265166, 116.39762575401475], zoom_start=12, width='100%', height='100%')
+HeatMap(objects).add_to(san_map)
 
+file_path = r"./AirQualityMap.html"
+
+# 保存为html文件
+san_map.save(file_path)
