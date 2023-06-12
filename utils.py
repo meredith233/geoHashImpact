@@ -79,3 +79,12 @@ def add_laplace_noise(x, y, b):
     noise_x = np.random.laplace(0, b)
     noise_y = np.random.laplace(0, b)
     return x + noise_x, y + noise_y
+
+
+def get_area(lat1, lon1, lat2, lon2):
+    x1, y1 = to_xy(lat1, lon1)
+    x2, y2 = to_xy(lat2, lon2)
+
+    width = abs(x2 - x1)
+    height = abs(y2 - y1)
+    return width * height
