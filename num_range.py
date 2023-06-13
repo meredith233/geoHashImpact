@@ -61,7 +61,7 @@ def do_r():
 
 
 e_list = [round(i, 1) for i in np.arange(0.1, 1.1, 0.2)]
-get_list = [i for i in range(18, 22)]
+get_list = [i for i in range(15, 22)]
 resp = np.zeros((len(e_list), len(get_list)))
 x = -1
 y = -1
@@ -78,8 +78,8 @@ for num in get_list:
         constants.rate_of_0_to_1 = 1 / (constants.e_epsilon + 1)
         resp[x][y] = do_r()
 
-plt.ylim(0, 120)
-plt.xlim(17, 22)
+plt.ylim(0, 700)
+plt.xlim(14, 22)
 
 plt.title("关系图")
 plt.xlabel("number")  # 定义x坐标轴名称
