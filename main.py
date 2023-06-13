@@ -98,8 +98,8 @@ plt.xlim(0, 1)
 plt.title("关系图")
 plt.xlabel("epsilon")  # 定义x坐标轴名称
 plt.ylabel("avg distance")  # 定义y坐标轴名称
-plt.plot(e_list, dis_ours, label="OURS")  # 绘图
-plt.plot(e_list, lap_1, label="DPLIP")  # 绘图
-plt.plot(e_list, lap_2, label="DPLPA")  # 绘图
+plt.plot(e_list, dis_ours, '-D', label="OURS", color='k')  # 绘图
+plt.plot(e_list, lap_1, '-o', label="DPLIP", color='k')  # 绘图
+plt.plot(e_list, lap_2, '-x', label="DPLPA", color='k')  # 绘图
 plt.legend()
 plt.show()  # 展示
