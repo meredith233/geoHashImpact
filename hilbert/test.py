@@ -272,13 +272,23 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 plt.ylim(0, 360)
 plt.xlim(0, 180)
+
+x_list = []
+y_list = []
 for item in curve:
-    rectangle = patches.Rectangle((item['x1'], item['y1']), item['x2'] - item['x1'], item['y2'] - item['y1'], edgecolor='orange',facecolor="green", linewidth=7)
+    rectangle = patches.Rectangle((item['x1'], item['y1']), item['x2'] - item['x1'], item['y2'] - item['y1'], edgecolor='orange', fill=False, linewidth=4)
     ax.add_patch(rectangle)
     rx, ry = rectangle.get_xy()
     cx = rx + rectangle.get_width()/2.0
     cy = ry + rectangle.get_height()/2.0
+    x_list.append(cx)
+    y_list.append(cy)
     ax.annotate(item['index'], (cx, cy), color='black', weight='bold', fontsize=10, ha='center', va='center')
 
+
+for i in range(len(x_list)-1):
+    dx = x_list[i+1] - x_list[i]
+    dy = y_list[i+1] - y_list[i]
+    plt.quiver(x_list[i], y_list[i], dx, dy, angles='xy', scale=1.03, scale_units='xy', width=0.005)
 plt.show()
 
