@@ -20,7 +20,6 @@ def filter_point(x1, x2, y1, y2, points):
 def hil(x1, x2, y1, y2, points, direction):
     global dep
     dep += 1
-    print(dep)
     if dep > 400: return
     if direction == 0:
         hil0(x1, x2, y1, y2, points)
@@ -272,8 +271,8 @@ def hil3(x11, x22, y11, y22, points):
 def load():
     res = []
     path = "../Data/{}/Trajectory"
-    for i in range(182):
-        current_path = path.format(str(i).zfill(3))
+    for i1 in range(2):
+        current_path = path.format(str(i1).zfill(3))
         plts = os.scandir(current_path)
         for item in plts:
             path_item = current_path + "\\" + item.name
@@ -281,8 +280,7 @@ def load():
                 for line in fp.readlines()[6::600]:
                     item_list = line.split(',')
                     res.append([float(item_list[0]), float(item_list[1])])
-                    break
-            break
+    print(len(res))
     return res
 
 
