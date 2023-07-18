@@ -8,6 +8,43 @@ curve = []
 stack = deque()
 
 
+class Item(object):
+    def __init__(self):
+        self.nextFunc = None
+        self.func = None
+        self.points = None
+        self.y2 = None
+        self.y1 = None
+        self.x2 = None
+        self.x1 = None
+        self.type = None
+
+    def init_analyze(self, x1, x2, y1, y2, points, func, nextFunc):
+        self.type = 'analyze'
+        self.x1 = x1
+        self.x2 = x2
+        self.y1 = y1
+        self.y2 = y2
+        self.points = points
+        self.func = func
+        self.nextFunc = nextFunc
+
+    def init_hil(self, x1, x2, y1, y2, points, nextFunc):
+        self.type = 'hil'
+        self.x1 = x1
+        self.x2 = x2
+        self.y1 = y1
+        self.y2 = y2
+        self.points = points
+        self.nextFunc = nextFunc
+
+    def run(self):
+        if self.type == 'analyze':
+            analyze(self.x1, self.x2, self.y1, self.y2, self.points, self.nextFunc, self.func)
+        else:
+            self.nextFunc(self.x1, self.x2, self.y1, self.y2, self.points)
+
+
 def get_left_bottom(x1, x2, y1, y2):
     return x1, (x1 + x2) / 2, y1, (y1 + y2) / 2
 
@@ -35,59 +72,54 @@ def filter_point(x1, x2, y1, y2, points):
 # 定义维度 0-180 经度 0-360
 # 希尔伯特一阶从左下到左上到右上到右下， 编排为 0 -- 3
 # direction 0向上 1向右 2向下 3向左
-def hil(x1, x2, y1, y2, points, direction):
-    if direction == 0:
-        hil0(x1, x2, y1, y2, points)
-    elif direction == 1:
-        hil1(x1, x2, y1, y2, points)
-    elif direction == 2:
-        hil2(x1, x2, y1, y2, points)
-    else:
-        hil3(x1, x2, y1, y2, points)
-
-
 # 朝上
 def hil0(x11, x22, y11, y22, points):
-    record = []
-    analyze(x11, x22, y11, y22, points, 1, get_left_bottom, record)
-    analyze(x11, x22, y11, y22, points, 0, get_left_top, record)
-    analyze(x11, x22, y11, y22, points, 0, get_right_top, record)
-    analyze(x11, x22, y11, y22, points, 3, get_right_bottom, record)
+    init_analyze(x11, x22, y11, y22, points, hil0, get_right_bottom)
+    init_analyze(x11, x22, y11, y22, points, hil0, get_right_top)
+    init_analyze(x11, x22, y11, y22, points, hil0, get_left_top)
+    init_analyze(x11, x22, y11, y22, points, hil1, get_left_bottom)
 
 
 # 朝右
 def hil1(x11, x22, y11, y22, points):
-    record = []
-    analyze(x11, x22, y11, y22, points, 0, get_left_bottom, record)
-    analyze(x11, x22, y11, y22, points, 1, get_right_bottom, record)
-    analyze(x11, x22, y11, y22, points, 1, get_right_top, record)
-    analyze(x11, x22, y11, y22, points, 2, get_left_top, record)
+    init_analyze(x11, x22, y11, y22, points, hil2, get_left_top)
+    init_analyze(x11, x22, y11, y22, points, hil1, get_right_top)
+    init_analyze(x11, x22, y11, y22, points, hil1, get_right_bottom)
+    init_analyze(x11, x22, y11, y22, points, hil0, get_left_bottom)
 
 
 # 朝下
 def hil2(x11, x22, y11, y22, points):
-    record = []
-    analyze(x11, x22, y11, y22, points, 3, get_right_top, record)
-    analyze(x11, x22, y11, y22, points, 2, get_right_bottom, record)
-    analyze(x11, x22, y11, y22, points, 2, get_left_bottom, record)
-    analyze(x11, x22, y11, y22, points, 1, get_left_top, record)
+    init_analyze(x11, x22, y11, y22, points, hil1, get_left_top)
+    init_analyze(x11, x22, y11, y22, points, hil2, get_left_bottom)
+    init_analyze(x11, x22, y11, y22, points, hil2, get_right_bottom)
+    init_analyze(x11, x22, y11, y22, points, hil3, get_right_top)
 
 
 # 朝左
 def hil3(x11, x22, y11, y22, points):
-    record = []
-    analyze(x11, x22, y11, y22, points, 2, get_right_top, record)
-    analyze(x11, x22, y11, y22, points, 3, get_left_top, record)
-    analyze(x11, x22, y11, y22, points, 3, get_left_bottom, record)
-    analyze(x11, x22, y11, y22, points, 0, get_right_bottom, record)
+    init_analyze(x11, x22, y11, y22, points, hil0, get_right_bottom)
+    init_analyze(x11, x22, y11, y22, points, hil3, get_left_bottom)
+    init_analyze(x11, x22, y11, y22, points, hil3, get_left_top)
+    init_analyze(x11, x22, y11, y22, points, hil2, get_right_top)
 
 
-def analyze(x11, x22, y11, y22, points, direction, func, record):
+def init_analyze(x11, x22, y11, y22, points, nextFunc, func):
+    global stack
+    item = Item()
+    item.init_analyze(x11, x22, y11, y22, points, func, nextFunc)
+    stack.append(item)
+
+
+def analyze(x11, x22, y11, y22, points, nextFunc, func):
     x1, x2, y1, y2 = func(x11, x22, y11, y22)
     cur_points = filter_point(x1, x2, y1, y2, points)
     if len(cur_points) > 1:
         # 多于1个点，继续递归
-        record.append((x1, x2, y1, y2, cur_points, direction))
+        global stack
+        item = Item()
+        item.init_hil(x1, x2, y1, y2, cur_points, nextFunc)
+        stack.append(item)
     else:
         record = None
         if len(cur_points) > 0:
@@ -113,7 +145,13 @@ def load():
 
 
 def start():
-    hil(0, 180, 0, 360, load(), 0)
+    global stack
+    item1 = Item()
+    item1.init_hil(0, 180, 0, 360, load(), hil0)
+    stack.append(item1)
+    while len(stack) > 0:
+        item = stack.pop()
+        item.run()
     fig = plt.figure()
     ax = fig.add_subplot(111)
     plt.ylim(0, 360)
