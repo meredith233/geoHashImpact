@@ -131,7 +131,7 @@ def analyze(x11, x22, y11, y22, points, nextFunc, func):
 def load():
     res = []
     path = "../Data/{}/Trajectory"
-    for i1 in [0, 1, 50, 100, 180]:
+    for i1 in range(2):
         current_path = path.format(str(i1).zfill(3))
         plts = os.scandir(current_path)
         for item in plts:
@@ -160,6 +160,8 @@ def start():
     x_list = []
     y_list = []
     for item in curve:
+        if item['poi'] != None:
+            print(str(item['index']) + ' ' + str(item['poi'][0]) + ' ' + str(item['poi'][1]))
         rectangle = patches.Rectangle((item['x1'], item['y1']), item['x2'] - item['x1'], item['y2'] - item['y1'],
                                       edgecolor='orange', fill=False, linewidth=4)
         ax.add_patch(rectangle)
