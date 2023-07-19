@@ -95,6 +95,9 @@ for ep in e_list:
 plt.ylim(0, max(dis_ours) + 30)
 plt.xlim(0, 1)
 
+print(dis_ours)
+print(lap_1)
+print(lap_2)
 plt.title("关系图")
 plt.xlabel("epsilon")  # 定义x坐标轴名称
 plt.ylabel("avg distance")  # 定义y坐标轴名称

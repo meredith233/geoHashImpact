@@ -1,8 +1,6 @@
 import os
 from collections import deque
 
-from matplotlib import pyplot as plt, patches
-
 curve = []
 
 stack = deque()
@@ -152,32 +150,11 @@ def start():
     while len(stack) > 0:
         item = stack.pop()
         item.run()
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    plt.ylim(0, 360)
-    plt.xlim(0, 180)
 
-    x_list = []
-    y_list = []
+    print(len(curve))
     for item in curve:
-        if item['poi'] != None:
-            print(str(item['index']) + ' ' + str(item['poi'][0]) + ' ' + str(item['poi'][1]))
-        rectangle = patches.Rectangle((item['x1'], item['y1']), item['x2'] - item['x1'], item['y2'] - item['y1'],
-                                      edgecolor='orange', fill=False, linewidth=4)
-        ax.add_patch(rectangle)
-        rx, ry = rectangle.get_xy()
-        cx = rx + rectangle.get_width() / 2.0
-        cy = ry + rectangle.get_height() / 2.0
-        x_list.append(cx)
-        y_list.append(cy)
-        ax.annotate(item['index'], (cx, cy), color='black', weight='bold', fontsize=10, ha='center', va='center')
-
-    for i in range(len(x_list) - 1):
-        dx = x_list[i + 1] - x_list[i]
-        dy = y_list[i + 1] - y_list[i]
-        plt.quiver(x_list[i], y_list[i], dx, dy, angles='xy', scale=1.03, scale_units='xy', width=0.005)
-    plt.show()
+        if item['poi']:
+            print(item)
 
 
-if __name__ == "__main__":
-    start()
+start()
