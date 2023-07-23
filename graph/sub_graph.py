@@ -15,12 +15,14 @@ dplpa = [50.46653434185366, 45.923134607848915, 45.88168582148042, 43.9854623509
 plt.ylim(30, 90)
 plt.xlim(0, 1.1)
 
-plt.title("graph")
+plt.figure(dpi=300)
+plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
+plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 plt.xlabel("epsilon")  # 定义x坐标轴名称
-plt.ylabel("avg distance")  # 定义y坐标轴名称
+plt.ylabel("距离误差(m)")  # 定义y坐标轴名称
 plt.plot(e_list, ours, '-D', label="OURS", color='k')  # 绘图
 plt.plot(e_list, dplip, '-o', label="DPLIP", color='k')  # 绘图
 plt.plot(e_list, dplpa, '-x', label="DPLPA", color='k')  # 绘图
-plt.plot(e_list, tree, '-*', label="TREE", color='k')  # 绘图
+plt.plot(e_list, tree, '-*', label="ISTDP", color='k')  # 绘图
 plt.legend()
 plt.show()  # 展示
